@@ -1,94 +1,14 @@
 #include <gtest/gtest.h>
 
-#include <Account/Account.h>
+#include <Vector\Vector.h>
 
-TEST(AccountWorkTest, AllTest) {
-    setlocale(LC_ALL, "Russian");
-    TT::Credit Man3("Neizvestniy Diad Pihto", -30506, 10);
-    TT::Credit Man = TT::Credit::Credit();
-    auto p = Man3.clone();
-    string gg = "Rrrrrrrrrrrrttttttttttttttttttttttttttttttrrr";
-    Man3.set_name(gg);
-    EXPECT_TRUE(Man3.get_name() == "Rrrrrrrrrrrrttttttttttttttttttttttttttttttrrr");
-    Man3.set_money(5993.4);
-    EXPECT_TRUE(Man3.get_money() == 5993.4);
-}
+TEST(VectorTests, MethodsTest) {
 
+    std::complex<double> z2(0.34000000000001, 3.2);
+    std::complex<double> z1(0.34, 3.2);
+    Vector<complex<double>> v1(1, z1);
+    Vector<complex<double>> v2(1, z2);
 
-TEST(PercentTests, Accrual_of_interestTest1) {
-    // Arrange
-    TT::Settlement Man1("Korolev Pavel Sergeevich", 43000);
-    TT::Deposit Man2("Chelovechniy Chelovek Chelovechovich", 100000, 5);
-    TT::Credit Man3("Neizvestniy Diad Pihto", -30506, 10);
-    TT::Credit Man4("Nvestniy Dd Pto", 30506, 10);
-
-    // Act
-    Man1.Accrual_of_interest();
-    Man2.Accrual_of_interest();
-    Man3.Accrual_of_interest();
-    Man4.Accrual_of_interest();
-    // Assert
-
-    EXPECT_EQ(Man1.get_money(), 43000);
-    EXPECT_FLOAT_EQ(Man2.get_money(), 141666.66666666666);
-    EXPECT_FLOAT_EQ(Man3.get_money(), -55927.666666666672);
-    EXPECT_FLOAT_EQ(Man4.get_money(), 30506);
-
-}
-
-TEST(PrintAccount, Account) {
-    setlocale(LC_ALL, "Russian");
-    TT::Settlement Man1("Korolev Pavel Sergeevich", 43000);
-    TT::Deposit Man2("Chelovechniy Chelovek Chelovechovich", 100000, 5);
-    TT::Credit Man3("Neizvestniy Diad Pihto", -30506, 10);
-    TT::Credit Man4("Nvestniy Dd Pto", 30506, 10);
-
-    Man1.Print();
-    Man2.Print();
-    Man3.Print();
-    Man4.Print();
-}
-
-TEST(NEW_List, In_ListAcc) {
-    TT::ListAcc check;
-    TT::Credit Man3("Neizvestniy Diad Pihto", -30506, 10);
-    check.add(make_shared<TT::Deposit>(Man3), 0);
-}
-
-TEST(AccountListTests, AccListCtorAndOPCpyTest) {
-    TT::ListAcc EL = TT::ListAcc::ListAcc();
-    TT::ListAcc EL2(EL);
-    TT::ListAcc EL3 = EL;
-    EXPECT_EQ(EL, EL2);
-    EXPECT_EQ(EL, EL3);
-}
-
-
-TEST(AccListTests, AddDelTests1) {
-    // Arrange
-    TT::ListAcc check;
-    TT::Deposit  Man1("Chelovechniy Chelovek Chelovechovich", 100000, 5);
-    check.add(make_shared<TT::Deposit>(Man1));
-    check.add(make_shared<TT::Deposit>(Man1),1);
-    check.Del(0);
-}
-
-TEST(AccListTests, AddDelTests2) {
-    // Arrange
-    TT::ListAcc check;
-    TT::Credit  Man1("Chelovechniy Chelovek Chelovechovich", 100000, 5);
-    check.add(make_shared<TT::Credit>(Man1));
-    check.add(make_shared<TT::Credit>(Man1), 1);
-    check.Del(0);
-}
-
-TEST(AccListTests, AddDelTests3) {
-    // Arrange
-    TT::ListAcc check;
-    TT::Deposit  Man1("Chelovechniy Chelovek Chelovechovich", 100000, 5);
-    check.add(make_shared<TT::Deposit>(Man1));
-    check.add(make_shared<TT::Deposit>(Man1), 1);
-    check.Del(0);
 }
 /*
 TEST(AccListTests, MethodsTest) {

@@ -18,7 +18,8 @@ if(MSVC)
 endif()
 
 # Объявляем библиотеку
-add_library(Vector SHARED "src/Vector.cc")
+add_library(Vector SHARED "include/Vector/Vector.h" "src/Vector.cc")
+target_include_directories(Vector PUBLIC "include")
 
 # Подключаем googletest
 include(FetchContent)
