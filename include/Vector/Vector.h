@@ -3,6 +3,7 @@
 #include <iostream>
 #include <utility>
 #include <memory>
+#include <windows.h>
 #include <random>
 #include <complex>
 
@@ -13,9 +14,18 @@ private:
     T* _data;
     size_t _size;
     size_t _capacity;
-    void resize();
+    void resize() {
+        _capacity += 10;
+        T* new_data = new T[_capacity];
+        for (int i = 0; i < _size; ++i) {
+            new_data[i] = _data[i];
+        }
+        if(_data)
+            delete[] _data;
+        _data = new_data;
+    }
 public:
-    static const double _accuracy;
+    static const double accuracy;
 
     Vector() : _size(0), _capacity(0), _data(nullptr) {}
 
@@ -26,9 +36,17 @@ public:
         _data[0] = item;
     }
 
-    Vector(size_t size, T& high, T& low) ;
+    Vector(size_t size, T& low, T& high);
 
-    Vector(const Vector<T>& Second);
+    Vector(const Vector<T>& Second) :_size(Second._size), _capacity(Second._capacity) {
+        if (Second._capacity != 0) {
+            _data = new T[Second._capacity];
+            for (size_t i = 0; i < Second._size; ++i)
+                _data[i] = Second._data[i];
+        }
+        else
+            _data = nullptr;
+    }
 
     size_t get_capacity() const {
         return _capacity;
@@ -39,29 +57,44 @@ public:
     }
 
     void push_back(const T& value) {
+        if (!_data) {
+            _data = new T[5];
+            _capacity = 5;
+        }
         if (_size >= _capacity) {
             resize();
         }
-        _data[_size++] = value;
+        _data[_size] = value;
+        ++_size;
     }
 
     const T& operator[](size_t index) const {
-        if (index < 0 || index >= _size) {
+        if (index < 0 || index >= _capacity) {
             throw std::out_of_range("Out of range");
         }
         return _data[index];
     }
 
     T& operator[](size_t index) {
-        if (index < 0 || index >= _size) {
+        if (index < 0 || index >= _capacity) {
             throw std::out_of_range("Out of range");
         }
         return _data[index];
     }
 
+    void insert(size_t index, T& item) {
+        _data[index] = item;
+    }
+
     bool operator==(const Vector& Second) const;
 
-    Vector<T>& operator+=(const Vector<T>& Second);
+    Vector<T>& operator+=(const Vector<T>& Second) {
+        if (_size != Second._size)
+            throw std::logic_error("Different dimensions");
+        for (size_t i = 0; i < _size; ++i)
+            _data[i] += Second._data[i];
+        return *this;
+    }
 
     Vector<T> operator+(const Vector<T>& Second) const {
         Vector Temporary(Second);
@@ -72,7 +105,13 @@ public:
         return (*this == Second) == false;
     }
 
-    Vector<T>& operator-=(const Vector<T>& Second);
+    Vector<T>& operator-=(const Vector<T>& Second) {
+        if (_size != Second._size)
+            throw std::logic_error("Different dimensions");
+        for (size_t i = 0; i < _size; ++i)
+            _data[i] -= Second._data[i];
+        return *this;
+    }
 
     Vector<T> operator-(const Vector& Second) const {
         Vector Temporary(Second);
@@ -82,7 +121,13 @@ public:
     T& operator*(const Vector<T>& Second);
 
     // ќператор умножени€ вектора на скал€р (слева)
-    Vector<T> operator*(const T& scalar) const;
+    Vector<T> operator*(const T& scalar) const {
+        Vector<T> result(*this);
+        for (int i = 0; i < _size; ++i) {
+            result._data[i] *= scalar;
+        }
+        return result;
+    }
 
     // ќператор умножени€ вектора на скал€р (справа)
     friend Vector<T> operator*(const T& scalar, const Vector<T>& This) {
@@ -102,29 +147,30 @@ public:
         return s;
     }
 
-    friend istream& operator>>(istream& s, Vector& o) {
-        char c;
-        cout << "Capacity is: ";
-        s >> o._capacity;
-        if (o._size > 0) {
-            delete[] o._data;
-            o._size = 0;
+    friend istream& operator>>(istream& is, Vector& ivec){
+        cout << "\nSize of vector:";
+        is >> ivec._capacity;
+        if (ivec._capacity == 0) {
+            ivec._data = nullptr;
+            ivec._size = 0;
+            return is;
         }
-        o._data = new T[o._capacity];
-        cout << "Enter the vector elements: ";
-        for (size_t i = 0; i < o._capacity; ++i) {
-            s >> o._data[i];
-            if (i != o._capacity) {
-                s >> c; // ;
-            }
+        else{
+            ivec._data = new T[ivec._capacity];
+            ivec._size = insert_data<T>(is, ivec._data, ivec._capacity);
+            return is;
         }
-        return s;
     }
+
+    Vector<T>& normalize();
 
     ~Vector() {
         delete[] _data;
     }
-
 };
 
-const double Vector<complex<double>>::_accuracy = 0.000001;
+template<typename T>
+const double Vector<T>::accuracy = 0.000001;
+
+
+
