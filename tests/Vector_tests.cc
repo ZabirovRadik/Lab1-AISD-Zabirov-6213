@@ -2,6 +2,23 @@
 
 #include <D:\Lab1-AISD-Zabirov-6213\src\Vector.cc>
 
+TEST(ConstructorRandom, MethodTests) {
+    int i_min = -500, i_max = 500;
+    double d_min = -500, d_max = 500;
+    float f_min = -500, f_max = 500;
+    std::complex<double> zd_min(-500, -500), zd_max(500, 500);
+    std::complex<float> zf_min(-500, -500), zf_max(500, 500);
+    Vector<int> Vi(5, i_min, i_max);
+    Vector<double> Vd(5, d_min, d_max);
+    Vector<float> Vf(5, f_min, f_max);
+    Vector<complex<double>> Vcd(5, zd_min, zd_max);
+    Vector<complex<float>> Vcf(5, zf_min, zf_max);
+}
+
+
+
+
+
 TEST(VectorTestsComplexDouble, MethodsTest) {
     std::complex<double> z1(0.34, 3.2);
     std::complex<double> z2(0.340000001, 3.2);

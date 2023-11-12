@@ -258,18 +258,38 @@ Vector<complex<float>>& Vector<complex<float>>::normalize() {
 
 template<>
 Vector<int>& Vector<int>::normalize() {
-    double length = 0;
+    bool found_not_null = false;
     for (size_t i = 0; i < _size; ++i) {
-        length += pow(_data[i], 2);
-    }
-    if (length == 0)
-        throw logic_error("Division by zero");
-    length = ceil(sqrt(length));
-    for (size_t i = 0; i < _size; ++i) {
-        _data[i] = round(double(_data[i]) / length);
+        if (_data[i] > 0 && !found_not_null) {
+            _data[i] = 1;
+            found_not_null = true;
+        }
+        else
+            if (_data[i] < 0 && !found_not_null) {
+                _data[i] = -1;
+                found_not_null = true;
+            }
+            else
+                _data[i] = 0;
     }
     return *this;
 }
+
+
+//template<>
+//Vector<int>& Vector<int>::normalize() {
+//    double length = 0;
+//    for (size_t i = 0; i < _size; ++i) {
+//        length += pow(_data[i], 2);
+//    }
+//    if (length == 0)
+//        throw logic_error("Division by zero");
+//    length = ceil(sqrt(length));
+//    for (size_t i = 0; i < _size; ++i) {
+//        _data[i] = round(double(_data[i]) / length);
+//    }
+//    return *this;
+//}
 
 template<typename T>
 Vector<T>& Vector<T>::normalize() {
