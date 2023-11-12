@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.11)
 
-project(Vector CXX)
+project(LinkedList CXX)
 
 set(CMAKE_CXX_STANDARD 23)
 
@@ -18,8 +18,8 @@ if(MSVC)
 endif()
 
 # Объявляем библиотеку
-add_library(Vector SHARED "include/Vector/Vector.h" "src/Vector.cc")
-target_include_directories(Vector PUBLIC "include")
+add_library(LinkedList SHARED "include/LinkedList/LinkedList.h" "src/LinkedList.cc")
+target_include_directories(LinkedList PUBLIC "include")
 
 # Подключаем googletest
 include(FetchContent)
@@ -28,6 +28,6 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
 
 # Объявляем тесты
-add_executable(Vector_tests "tests/Vector_tests.cc")
-target_link_libraries(Vector_tests Vector GTest::gtest_main)
+add_executable(LinkedList_tests "tests/LinkedList_tests.cc")
+target_link_libraries(LinkedList_tests LinkedList GTest::gtest_main)
 
