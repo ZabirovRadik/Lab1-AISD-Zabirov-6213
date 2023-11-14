@@ -82,10 +82,6 @@ public:
         return _data[index];
     }
 
-    void insert(size_t index, T& item) {
-        _data[index] = item;
-    }
-
     bool operator==(const Vector& Second) const;
 
     Vector<T>& operator+=(const Vector<T>& Second) {
@@ -96,9 +92,8 @@ public:
         return *this;
     }
 
-    Vector<T> operator+(const Vector<T>& Second) const {
-        Vector Temporary(Second);
-        return Temporary += *this;
+    Vector<T> operator+( Vector<T> Second) const {
+        return Second += *this;
     }
 
     bool operator!=(const Vector& Second) const {
@@ -113,9 +108,8 @@ public:
         return *this;
     }
 
-    Vector<T> operator-(const Vector& Second) const {
-        Vector Temporary(Second);
-        return Temporary -= *this;
+    Vector<T> operator-(Vector Second) const {
+        return Second -= *this;
     }
 
     T& operator*(const Vector<T>& Second);

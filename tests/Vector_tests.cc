@@ -26,10 +26,13 @@ TEST(VectorTestsComplexDouble, MethodsTest) {
     Vector<complex<double>> v1(1, z1);
     Vector<complex<double>> v2(1, z2);
     Vector<complex<double>> v3(v1);
+    std::complex<double> z4(1, 0);
+    Vector<complex<double>> v4(1, z4);
+    cout << v4 + v1 << endl;
     v3.push_back(z3);
-    cout << v1;
-    cout << v2;
-    cout << v3;
+    cout << v1 <<endl;
+    cout << v2 << endl;
+    cout << v3 << endl;
     v3[1] = std::complex<double>(15, 0.15);
     cout << v3;
     std::complex<double> ans(0.68, 6.4);
@@ -90,7 +93,7 @@ TEST(VectorTask, FuncTest) {
     find_orthogonal(v);
     cout << v << endl;
     cout << "Just ortogona: " << find_orthogonal(v) << endl;
-    cout << "Ortonorm: " << find_normal_orthogonal(v) << endl;
+    cout << "Ortonorm: " << find_ortonarmal(v) << endl;
 }
 
 TEST(VectorTask2, FuncTest) {
@@ -101,5 +104,5 @@ TEST(VectorTask2, FuncTest) {
     Vector<complex<double>> v(4,  z2, z3);
     cout << "First vector:" << v << endl;
     cout << "Just ortogona: " << find_orthogonal(v) << endl;
-    cout << "Ortonorm: " << find_normal_orthogonal(v) << endl;
+    cout << "Ortonorm: " << find_ortonarmal(v) << endl;
 }

@@ -10,32 +10,7 @@ using namespace std;
 
 
 
-//Оператор деления вектора на скаляр
-template <>
-Vector<complex<double>> Vector<complex<double>>::operator/(const complex<double>& scalar) const {
-    if (norm(scalar) == 0) {
-        throw std::invalid_argument("Division by zero is not allowed");
-    }
-    Vector<complex<double>> result(*this);
-    for (size_t i = 0; i < _size; i++) {
-        result[i] = _data[i] / scalar;
-    }
-    return result;
 
-}
-
-template <>
-Vector<complex<float>> Vector<complex<float>>::operator/(const complex<float>& scalar) const {
-    if(norm(scalar) == 0) {
-        throw std::invalid_argument("Division by zero is not allowed");
-    }
-    Vector<complex<float>> result(*this);
-    for (int i = 0; i < _size; i++) {
-        result[i] = _data[i] / scalar;
-    }
-    return result;
-
-}
 
 template <typename T>
 Vector<T> Vector<T>::operator/(const T& scalar) const {
@@ -175,18 +150,6 @@ Vector<complex<float>>::Vector(size_t size, complex<float>& low, complex<float>&
     }
 }
 
-template <>
-Vector<int>::Vector(size_t size, int& low, int& high) : _size(size), _capacity(size) {
-    _data = new int[_capacity]; // Создаем массив заданной емкости
-
-    std::random_device rd; // Генератор случайных чисел
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dis(low, high); // Равномерное распределение чисел в заданном диапазоне
-
-    for (size_t i = 0; i < _size; i++) {
-        _data[i] = dis(gen); // Заполняем вектор случайными числами
-    }
-}
 
 template <typename T>
 Vector<T>::Vector(size_t size, T& low, T& high) : _size(size), _capacity(size) {
@@ -198,12 +161,12 @@ Vector<T>::Vector(size_t size, T& low, T& high) : _size(size), _capacity(size) {
         _data[i] = low + static_cast<T>(rand()) * static_cast<T>(high - low) / RAND_MAX;
     }
 }
-
 template<>
 complex<double>& Vector<complex<double>>::operator*(const Vector<complex<double>>& Second) {
     complex<double> answer(0, 0);
     for (size_t i = 0; i < _size; ++i) {
-        answer += complex<double>(_data[i].real() * Second._data[i].real(), _data[i].imag() * Second._data[i].imag());
+        answer += _data[i] * conj(Second._data[i]);
+        //data[i]*Second.data[i].conj()
     }
     return answer;
 }
@@ -212,7 +175,7 @@ template<>
 complex<float>& Vector<complex<float>>::operator*(const Vector<complex<float>>& Second) {
     complex<float> answer(0, 0);
     for (size_t i = 0; i < _size; ++i) {
-        answer += complex<float>(_data[i].real() * Second._data[i].real(), _data[i].imag() * Second._data[i].imag());
+        answer += _data[i] * conj(Second._data[i]);
     }
     return answer;
 }
@@ -313,14 +276,8 @@ Vector<T> find_orthogonal(const Vector<T>& Main_vector) {
     size_t i, j, main_size = Main_vector.get_size();
     for (i = 0; i < main_size && Main_vector[i] == 0; ++i);
     for (j = i + 1; j < main_size && Main_vector[j] == 0; ++j);
-    if (i == main_size && j == main_size)
+    if (i == main_size || j >= main_size)
         throw std::invalid_argument("vector with one or zero values");
-    else {
-        if (i == main_size)
-            return Answer;
-        else if (j == main_size)
-            return Answer;
-    }
     T pos = Main_vector[j];
     T neg = Main_vector[i];
     for (size_t k = 0; k < main_size; ++k) {
@@ -373,7 +330,7 @@ Vector<complex<double>> find_orthogonal(const Vector<complex<double>>& Main_vect
     size_t i, j, main_size = Main_vector.get_size();
     for (i = 0; i < main_size && Main_vector[i].real() == 0 && Main_vector[i].imag() == 0; ++i);
     for (j = i + 1; j < main_size && Main_vector[j].real() == 0 && Main_vector[j].imag() == 0; ++j);
-    if (i == main_size || j == main_size)
+    if (i == main_size || j >= main_size)
         throw std::invalid_argument("vector with one or zero values");
     complex<double> pos, neg;
     double real_pos = Main_vector[j].real(), imag_pos = Main_vector[j].imag();
@@ -403,7 +360,11 @@ Vector<complex<double>> find_orthogonal(const Vector<complex<double>>& Main_vect
             }
         }
     }
-    if (abs(Answer * Main_vector) < Vector<complex<double>>::accuracy)
+    Vector<complex<double>> Tmp(Answer);
+    for (size_t t = 0; t < Tmp.get_size(); ++t) {
+        Tmp[t] = conj(Tmp[t]);
+    }
+    if (abs(Tmp * Main_vector) < Vector<complex<double>>::accuracy)
         return Answer;
     else
         throw std::logic_error("The code is incorrect!");
@@ -433,9 +394,12 @@ Vector<complex<float>> find_orthogonal(const Vector<complex<float>>& Main_vector
             pos = complex<float>(real_pos, imag_pos);
             neg = complex<float>(-real_neg, -imag_neg);
         }
-
     }
-    if (abs(Answer * Main_vector) == Vector<complex<float>>::accuracy)
+    Vector<complex<float>> Tmp(Answer);
+    for (size_t t = 0; t < Tmp.get_size(); ++t) {
+        Tmp[t] = conj(Tmp[t]);
+    }
+    if (abs(Tmp * Main_vector) == Vector<complex<float>>::accuracy)
         return Answer;
     else
         throw std::logic_error("The code is incorrect!");
@@ -443,21 +407,12 @@ Vector<complex<float>> find_orthogonal(const Vector<complex<float>>& Main_vector
 
 
 template<typename T>
-Vector<T> find_normal_orthogonal(const Vector<T>& Main_vector) {
+Vector<T> find_ortonarmal(const Vector<T>& Main_vector) {
     return find_orthogonal(Main_vector).normalize();
 }
 
 
 //int main() {
-//    std::complex<double> z(0.34, 1.3421);
-//    std::complex<double> z1(488.234, 0.13940);
-//    std::complex<double> z2(0.340000001, 3.2);
-//    std::complex<double> z3(0.25, 133.4);
-//    Vector<complex<double>> v(1, z);
-//    v.push_back(z1);
-//    v.push_back(z2);
-//    v.push_back(z3);
-//    cout << "First vector:" << v << endl;
-//    cout << find_orthogonal(v);
+//    Vector<complex<double>> v;
 //    cin >> v;
 //}
